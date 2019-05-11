@@ -72,6 +72,8 @@ int size = (GetSystemMetrics(SM_CYSCREEN) > GetSystemMetrics(SM_CXSCREEN) ? GetS
 IMAGE bgimage, wall, people, step, route, end;
 HWND hwnd;
 
+Point Find;
+bool Isfind = false;
 int _tmain(int argc, _TCHAR * argv[])
 {
 	hwnd = initgraph(LINES*size, COLS*size);
@@ -154,11 +156,9 @@ void AStarRouter()
 			outtextxy(LINES*size * 20 / 100, COLS*size / 2, "Failure!!");
 			break;
 		}
-		if (Hmap[QueueRouteStart.present->point.x][QueueRouteStart.present->point.y].find == 2 || Hmap[QueueRouteEnd.present->point.x][QueueRouteEnd.present->point.y].find == 1)
+		if (Isfind==true)
 		{
-			//QueueRouteStart.present->point.x == QueueRouteEnd.present->point.x&&QueueRouteStart.present->point.y == QueueRouteEnd.present->point.y
-			MoveCheck(QueueRouteStart.present->point, QueueRouteEnd.present, QR_END);
-			MoveCheck(QueueRouteEnd.present->point, QueueRouteStart.present, QR_START);
+
 			DrawRoute();
 			settextcolor(RGB(0, 120, 255));
 			settextstyle(LINES*size * 5 / 100, LINES*size * 5 / 100, "ºÚÌå");
@@ -181,6 +181,12 @@ void MoveCheck(Point Test, RouteNode * father, int QR_MODE)
 	{
 		if ((Hmap[Test.x][Test.y].find == 0 || Hmap[Test.x][Test.y].find == 2) && Hmap[Test.x][Test.y].value == 0 && (Test.x >= 0 && Test.x < LINES) && (Test.y >= 0 && Test.y < COLS))
 		{
+			if (Hmap[Test.x][Test.y].find == 2)
+			{
+				Isfind = true;
+				Find.x = Test.x;
+				Find.y = Test.y;
+			}
 			AddNode(Test, father, QR_START);
 			Hmap[Test.x][Test.y].find = 1;
 		}
@@ -189,6 +195,12 @@ void MoveCheck(Point Test, RouteNode * father, int QR_MODE)
 	{
 		if ((Hmap[Test.x][Test.y].find == 0 || Hmap[Test.x][Test.y].find == 1) && Hmap[Test.x][Test.y].value == 0 && (Test.x >= 0 && Test.x < LINES) && (Test.y >= 0 && Test.y < COLS))
 		{
+			if (Hmap[Test.x][Test.y].find == 1)
+			{
+				Isfind = true;
+				Find.x = Test.x;
+				Find.y = Test.y;
+			}
 			AddNode(Test, father, QR_END);
 			Hmap[Test.x][Test.y].find = 2;
 		}
@@ -205,6 +217,7 @@ void InitEnveronment()
 			Hmap[i][j].find = 0;
 		}
 	}
+	Isfind = false;
 }
 void DisplayMap()
 {
@@ -244,15 +257,23 @@ void DisplayMap()
 void DrawRoute()
 {
 	RouteNode * rear = QueueRouteStart.present;
+	rear = QueueRouteStart.head;
+	while (rear)
+	{
+		if (rear->point.x == Find.x && rear->point.y==Find.y)
+			break;
+		rear = rear->next;
+	}
 	while (rear)
 	{
 		Hmap[rear->point.x][rear->point.y].value = 9;
 		rear = rear->father;
 	}
+	rear = QueueRouteEnd.present;
 	rear = QueueRouteEnd.head;
 	while (rear)
 	{
-		if (rear->point.x == QueueRouteStart.present->point.x && rear->point.y == QueueRouteStart.present->point.y)
+		if (rear->point.x == Find.x && rear->point.y == Find.y)
 			break;
 		rear = rear->next;
 	}
