@@ -227,7 +227,7 @@ void SetMap()
 	putimage(0, 0, &bgimage);
 	settextcolor(RGB(0, 255, 255));
 	settextstyle(LINES*size * 3 / 100, LINES*size * 3 / 100, "黑体");
-	outtextxy(LINES*size * 20 / 100, COLS*size * 10 / 100, "深度寻路展示");
+	outtextxy(LINES*size * 20 / 100, COLS*size * 10 / 100, "单路A*寻路展示");
 	outtextxy(LINES*size * 20 / 100, COLS*size * 20 / 100, "1/左键:设置墙壁");
 	outtextxy(LINES*size * 20 / 100, COLS*size * 30 / 100, "2/右键:设置空白");
 	outtextxy(LINES*size * 20 / 100, COLS*size * 40 / 100, "3:设置出发点");
